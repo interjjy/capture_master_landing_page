@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capture Master — Capture anything. Send it to Notion instantly.</title>
+  <meta name="description" content="Capture Master for macOS: capture any area with one shortcut and send it straight to Notion. Scrolling capture, MP4/GIF recording, and OCR." />
+  <meta property="og:title" content="Capture Master for macOS" />
+  <meta property="og:description" content="One shortcut. Capture anything. Send it straight to Notion." />
+  <meta property="og:image" content="feature1.png" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'Segoe UI', 'sans-serif'],
+          },
+          colors: {
+            ink: { 900: '#0A0A0B', 700: '#3A3A3F', 500: '#6E6E76', 300: '#B4B4BB' },
+            brand: { 50: '#EEF2FF', 100: '#E0E7FF', 500: '#5B5BF7', 600: '#4F46E5', 700: '#4338CA' },
+          },
+          boxShadow: {
+            soft: '0 1px 2px rgba(16,24,40,.04), 0 8px 24px -8px rgba(16,24,40,.08)',
+            device: '0 40px 80px -24px rgba(30,30,60,.28), 0 12px 24px -12px rgba(30,30,60,.18)',
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    .bg-grid {
+      background-image:
+        linear-gradient(to right, rgba(15,15,30,.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15,15,30,.045) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+              mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+    }
+    .text-gradient {
+      background: linear-gradient(180deg, #0A0A0B 0%, #4A4A55 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease, opacity .35s ease; opacity: 0; }
+    .faq-item.open .faq-panel { grid-template-rows: 1fr; opacity: 1; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-icon { transition: transform .3s ease; }
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+  </style>
+</head>
+
+<body class="bg-white font-sans text-ink-900">
+
+  <!-- ============ NAV ============ -->
+  <header id="nav" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+    <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+      <a href="#" class="flex items-center gap-2.5 font-semibold tracking-tight">
+        <span class="grid h-8 w-8 place-items-center rounded-[9px] bg-gradient-to-br from-brand-500 to-brand-700 shadow-soft">
+          <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
+        </span>
+        Capture Master
+      </a>
+      <div class="hidden items-center gap-8 text-sm text-ink-500 md:flex">
+        <a href="#features" class="hover:text-ink-900 transition">Features</a>
+        <a href="#pricing" class="hover:text-ink-900 transition">Pricing</a>
+        <a href="#faq" class="hover:text-ink-900 transition">FAQ</a>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="index-ko.html" class="rounded-full px-3 py-1.5 text-xs font-medium text-ink-500 ring-1 ring-black/10 hover:text-ink-900 hover:ring-black/20 transition">한국어</a>
+        <a href="https://YOUR_STORE.lemonsqueezy.com/buy/YOUR_ID?embed=1" class="lemonsqueezy-button hidden rounded-full bg-ink-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-ink-700 transition sm:inline-block">Buy</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="relative overflow-hidden pt-32 sm:pt-40">
+      <div class="bg-grid pointer-events-none absolute inset-0 -z-10"></div>
+      <div class="pointer-events-none absolute left-1/2 top-24 -z-10 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-brand-100 via-sky-50 to-fuchsia-50 opacity-80 blur-3xl"></div>
+
+      <div class="mx-auto max-w-6xl px-5 text-center sm:px-8">
+        <a href="#features" class="reveal inline-flex items-center gap-2 rounded-full bg-white/80 px-3.5 py-1.5 text-xs font-medium text-ink-700 shadow-soft ring-1 ring-black/5 backdrop-blur">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          Now available for macOS
+          <svg class="h-3 w-3 text-ink-300" viewBox="0 0 20 20" fill="currentColor"><path d="M7.3 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 1 1-1.4-1.4L11.6 10 7.3 5.7a1 1 0 0 1 0-1.4z"/></svg>
+        </a>
+
+        <h1 class="reveal mx-auto mt-7 max-w-4xl text-[2.6rem] font-bold leading-[1.05] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
+          <span class="text-gradient">One shortcut.</span><br class="hidden sm:block" />
+          <span class="text-gradient">Straight to </span><span class="bg-gradient-to-r from-brand-500 to-fuchsia-500 bg-clip-text text-transparent">Notion.</span>
+        </h1>
+
+        <p class="reveal mx-auto mt-6 max-w-2xl text-base leading-relaxed text-ink-500 sm:text-lg">
+          Capture Master grabs any region, window, full screen or scrolling page with a single keystroke —
+          then sends the result directly to your Notion workspace. No saving, no dragging, no switching apps.
+        </p>
+
+        <div class="reveal mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a href="https://github.com/YOUR_GITHUB/YOUR_REPO/releases/latest/download/CaptureMaster.dmg"
+             class="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink-900 px-6 py-3.5 text-sm font-semibold text-white shadow-soft transition hover:bg-ink-700 sm:w-auto">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M16.37 1.43c0 1.14-.42 2.2-1.12 2.98-.84.94-2.2 1.66-3.3 1.57-.14-1.1.43-2.27 1.1-3 .76-.84 2.08-1.48 3.32-1.55zM20.5 17.1c-.55 1.27-.82 1.84-1.53 2.96-.99 1.57-2.39 3.52-4.12 3.53-1.54.02-1.94-1-4.03-.99-2.09.01-2.53 1.01-4.07.99-1.73-.02-3.05-1.78-4.04-3.35C-.06 16.03-.35 10.88 1.38 8.2c1.23-1.9 3.17-3.02 5-3.02 1.86 0 3.03 1.02 4.57 1.02 1.5 0 2.41-1.02 4.57-1.02 1.63 0 3.36.89 4.59 2.42-4.03 2.21-3.38 7.97.39 9.5z"/></svg>
+            Download Free Trial
+          </a>
+          <a href="https://YOUR_STORE.lemonsqueezy.com/buy/YOUR_ID?embed=1"
+             class="lemonsqueezy-button inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-ink-900 shadow-soft ring-1 ring-black/10 transition hover:ring-black/20 sm:w-auto">
+            Buy License — $2.99
+          </a>
+        </div>
+        <p class="reveal mt-4 text-xs text-ink-300">7-day free trial · One-time payment · Lifetime updates · macOS 13+</p>
+
+        <!-- Demo video (MacBook design is inside the video itself) -->
+        <div class="reveal relative mx-auto mt-14 max-w-5xl sm:mt-16">
+          <video class="block h-auto w-full" autoplay muted loop playsinline preload="metadata">
+            <source src="demo.mp4" type="video/mp4" />
+          </video>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="reveal mx-auto mt-14 grid max-w-3xl grid-cols-2 gap-6 text-left sm:grid-cols-4">
+          <div><p class="text-2xl font-semibold tracking-tight">⌃⌥1</p><p class="mt-1 text-xs text-ink-500">One shortcut to capture</p></div>
+          <div><p class="text-2xl font-semibold tracking-tight">&lt; 1s</p><p class="mt-1 text-xs text-ink-500">From capture to Notion</p></div>
+          <div><p class="text-2xl font-semibold tracking-tight">MP4 · GIF</p><p class="mt-1 text-xs text-ink-500">Screen recording</p></div>
+          <div><p class="text-2xl font-semibold tracking-tight">OCR</p><p class="mt-1 text-xs text-ink-500">Copy text from any image</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section id="features" class="scroll-mt-20 py-24 sm:py-32">
+      <div class="mx-auto max-w-6xl px-5 sm:px-8">
+        <div class="reveal mx-auto max-w-2xl text-center">
+          <p class="text-sm font-semibold text-brand-600">Features</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-5xl">Everything you capture,<br class="hidden sm:block" /> exactly where it belongs.</h2>
+          <p class="mt-5 text-ink-500">Three powerful tools in one lightweight menu-bar app.</p>
+        </div>
+
+        <div class="mt-16 grid gap-6 md:grid-cols-3">
+          <!-- Feature 1 -->
+          <article class="reveal group flex flex-col overflow-hidden rounded-3xl bg-[#fafafb] ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-soft">
+            <div class="p-7">
+              <div class="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-soft ring-1 ring-black/5">
+                <svg class="h-5 w-5 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/></svg>
+              </div>
+              <h3 class="mt-5 text-lg font-semibold tracking-tight">Every capture mode</h3>
+              <p class="mt-2 text-sm leading-relaxed text-ink-500">Area, window, full screen, and scrolling capture for long pages and documents — all from one shortcut.</p>
+              <ul class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-medium text-ink-700">
+                <li class="rounded-full bg-white px-2.5 py-1 ring-1 ring-black/5">Area</li>
+                <li class="rounded-full bg-white px-2.5 py-1 ring-1 ring-black/5">Window</li>
+                <li class="rounded-full bg-white px-2.5 py-1 ring-1 ring-black/5">Full screen</li>
+                <li class="rounded-full bg-white px-2.5 py-1 ring-1 ring-black/5">Scrolling</li>
+              </ul>
+            </div>
+            <div class="mt-auto px-7 pb-7">
+              <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-brand-50 to-white ring-1 ring-black/5">
+                <img src="feature1.png" alt="Capture modes screenshot" loading="lazy" class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" onerror="this.remove()" />
+                <span class="absolute inset-0 grid place-items-center text-xs text-ink-300">feature1.png</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Feature 2 -->
+          <article class="reveal group flex flex-col overflow-hidden rounded-3xl bg-[#fafafb] ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-soft">
+            <div class="p-7">
+              <div class="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-soft ring-1 ring-black/5">
+                <svg class="h-5 w-5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>
+              </div>
+              <h3 class="mt-5 text-lg font-semibold tracking-tight">Screen recording</h3>
+              <p class="mt-2 text-sm leading-relaxed text-ink-500">Record your screen as crisp MP4 video or a lightweight GIF — perfect for bug reports, tutorials and quick demos.</p>
+              <ul class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-medium text-ink-700">
+                <li class="rounded-full bg-white px-2.5 py-1 ring-1 ring-black/5">MP4</li>
+                <li class="rounded-full bg-white px-2.5 py-1 ring-1 ring-black/5">GIF</li>
+              </ul>
+            </div>
+            <div class="mt-auto px-7 pb-7">
+              <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-rose-50 to-white ring-1 ring-black/5">
+                <img src="feature2.png" alt="Screen recording screenshot" loading="lazy" class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" onerror="this.remove()" />
+                <span class="absolute inset-0 grid place-items-center text-xs text-ink-300">feature2.png</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Feature 3 -->
+          <article class="reveal group flex flex-col overflow-hidden rounded-3xl bg-[#fafafb] ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-soft">
+            <div class="p-7">
+              <div class="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-soft ring-1 ring-black/5">
+                <svg class="h-5 w-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2M8 9h8M8 12h8M8 15h5"/></svg>
+              </div>
+              <h3 class="mt-5 text-lg font-semibold tracking-tight">Image OCR</h3>
+              <p class="mt-2 text-sm leading-relaxed text-ink-500">Pull editable text out of any screenshot, PDF scan or image. Copy it, search it, or drop it into Notion.</p>
+              <ul class="mt-4 flex flex-wrap gap-1.5 text-[11px] font-medium text-ink-700">
+                <li class="rounded-full bg-white px-2.5 py-1 ring-1 ring-black/5">Text extraction</li>
+                <li class="rounded-full bg-white px-2.5 py-1 ring-1 ring-black/5">One-click copy</li>
+              </ul>
+            </div>
+            <div class="mt-auto px-7 pb-7">
+              <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-white ring-1 ring-black/5">
+                <img src="feature3.png" alt="OCR screenshot" loading="lazy" class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" onerror="this.remove()" />
+                <span class="absolute inset-0 grid place-items-center text-xs text-ink-300">feature3.png</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Notion banner -->
+        <div class="reveal mt-6 flex flex-col items-start justify-between gap-6 rounded-3xl bg-ink-900 p-8 text-white sm:flex-row sm:items-center sm:p-10">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-white/50">Notion integration</p>
+            <h3 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Capture → Notion, in one step.</h3>
+            <p class="mt-2 max-w-xl text-sm text-white/60">Pick a page or database once. Every capture after that lands there automatically.</p>
+          </div>
+          <div class="flex items-center gap-3 text-sm text-white/70">
+            <span class="rounded-xl bg-white/10 px-3 py-2 font-mono">⌃⌥1</span>
+            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.3 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 0 1-1.4-1.4l3.3-3.3H4a1 1 0 1 1 0-2h9.6l-3.3-3.3a1 1 0 0 1 0-1.4z"/></svg>
+            <span class="rounded-xl bg-white px-3 py-2 font-semibold text-ink-900">Notion</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section id="pricing" class="scroll-mt-20 bg-[#fafafb] py-24 sm:py-32">
+      <div class="mx-auto max-w-6xl px-5 sm:px-8">
+        <div class="reveal mx-auto max-w-2xl text-center">
+          <p class="text-sm font-semibold text-brand-600">Pricing</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-5xl">Pay once. Own it forever.</h2>
+          <p class="mt-5 text-ink-500">No subscriptions. Try every feature free for 7 days.</p>
+        </div>
+
+        <div class="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-2">
+          <!-- Free trial -->
+          <div class="reveal flex flex-col rounded-3xl bg-white p-8 ring-1 ring-black/5 sm:p-10">
+            <h3 class="text-lg font-semibold">Free Trial</h3>
+            <p class="mt-1 text-sm text-ink-500">Explore everything, no card required.</p>
+            <p class="mt-8 flex items-baseline gap-1"><span class="text-5xl font-bold tracking-tight">$0</span><span class="text-sm text-ink-500">/ 7 days</span></p>
+            <ul class="mt-8 space-y-3 text-sm text-ink-700">
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-ink-900" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>All capture modes</li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-ink-900" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>MP4 &amp; GIF recording</li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-ink-900" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>Image OCR</li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-ink-900" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>Send to Notion</li>
+              <li class="flex gap-3 text-ink-300"><svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path d="M5 9h10a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2z"/></svg>Expires after 7 days</li>
+            </ul>
+            <a href="https://github.com/YOUR_GITHUB/YOUR_REPO/releases/latest/download/CaptureMaster.dmg"
+               class="mt-10 inline-flex items-center justify-center rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-ink-900 ring-1 ring-black/10 transition hover:ring-black/25">
+              Download Free Trial
+            </a>
+          </div>
+
+          <!-- Personal license -->
+          <div class="reveal relative flex flex-col rounded-3xl bg-white p-8 shadow-device ring-2 ring-ink-900 sm:p-10">
+            <span class="absolute -top-3 left-8 rounded-full bg-ink-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">Best value</span>
+            <h3 class="text-lg font-semibold">Personal License</h3>
+            <p class="mt-1 text-sm text-ink-500">One payment. Yours for life.</p>
+            <p class="mt-8 flex items-baseline gap-1"><span class="text-5xl font-bold tracking-tight">$2.99</span><span class="text-sm text-ink-500">one-time</span></p>
+            <ul class="mt-8 space-y-3 text-sm text-ink-700">
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-brand-600" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>Everything in Free Trial</li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-brand-600" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>Unlimited use, forever</li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-brand-600" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>Lifetime updates</li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-brand-600" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>Email support</li>
+              <li class="flex gap-3"><svg class="mt-0.5 h-4 w-4 shrink-0 text-brand-600" viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z"/></svg>14-day money-back guarantee</li>
+            </ul>
+            <a href="https://YOUR_STORE.lemonsqueezy.com/buy/YOUR_ID?embed=1"
+               class="lemonsqueezy-button mt-10 inline-flex items-center justify-center rounded-full bg-ink-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-700">
+              Buy License — $2.99
+            </a>
+            <p class="mt-3 text-center text-xs text-ink-300">Secure checkout by Lemon Squeezy</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section id="faq" class="scroll-mt-20 py-24 sm:py-32">
+      <div class="mx-auto max-w-3xl px-5 sm:px-8">
+        <div class="reveal text-center">
+          <p class="text-sm font-semibold text-brand-600">FAQ</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-5xl">Questions, answered.</h2>
+        </div>
+
+        <div class="reveal mt-14 divide-y divide-black/5 border-y border-black/5">
+          <div class="faq-item">
+            <button class="faq-btn flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded="false">
+              <span class="text-base font-medium sm:text-lg">How do I move my license to a new Mac?</span>
+              <svg class="faq-icon h-5 w-5 shrink-0 text-ink-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1z"/></svg>
+            </button>
+            <div class="faq-panel"><div class="overflow-hidden">
+              <p class="pb-6 text-sm leading-relaxed text-ink-500 sm:text-base">
+                Open Capture Master on your old Mac and choose <strong class="text-ink-700">Settings → License → Deactivate</strong>.
+                Then install the app on your new Mac and enter the same license key from your purchase email.
+                If you no longer have access to the old Mac, email us at
+                <a href="mailto:interjjy@gmail.com" class="text-brand-600 underline-offset-2 hover:underline">interjjy@gmail.com</a> and we'll reset it for you.
+              </p>
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-btn flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded="false">
+              <span class="text-base font-medium sm:text-lg">What is your refund policy?</span>
+              <svg class="faq-icon h-5 w-5 shrink-0 text-ink-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1z"/></svg>
+            </button>
+            <div class="faq-panel"><div class="overflow-hidden">
+              <p class="pb-6 text-sm leading-relaxed text-ink-500 sm:text-base">
+                We offer a <strong class="text-ink-700">14-day money-back guarantee</strong>. If Capture Master isn't right for you,
+                email <a href="mailto:interjjy@gmail.com" class="text-brand-600 underline-offset-2 hover:underline">interjjy@gmail.com</a>
+                within 14 days of purchase with your order number and we'll issue a full refund.
+              </p>
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-btn flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded="false">
+              <span class="text-base font-medium sm:text-lg">Which macOS versions are supported?</span>
+              <svg class="faq-icon h-5 w-5 shrink-0 text-ink-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1z"/></svg>
+            </button>
+            <div class="faq-panel"><div class="overflow-hidden">
+              <p class="pb-6 text-sm leading-relaxed text-ink-500 sm:text-base">
+                Capture Master supports <strong class="text-ink-700">macOS 13 Ventura and later</strong>, and runs natively on
+                both Apple Silicon (M-series) and Intel Macs.
+              </p>
+            </div></div>
+          </div>
+        </div>
+
+        <p class="reveal mt-10 text-center text-sm text-ink-500">
+          Still have questions? <a href="mailto:interjjy@gmail.com" class="font-medium text-ink-900 underline-offset-4 hover:underline">interjjy@gmail.com</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="px-5 pb-24 sm:px-8">
+      <div class="reveal relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-brand-50 via-white to-fuchsia-50 px-6 py-16 text-center ring-1 ring-black/5 sm:py-20">
+        <h2 class="text-3xl font-bold tracking-[-0.03em] sm:text-5xl">Stop saving screenshots.<br />Start sending them.</h2>
+        <p class="mx-auto mt-5 max-w-xl text-ink-500">Try Capture Master free for 7 days. Keep it forever for $2.99.</p>
+        <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a href="https://github.com/YOUR_GITHUB/YOUR_REPO/releases/latest/download/CaptureMaster.dmg"
+             class="inline-flex w-full items-center justify-center rounded-full bg-ink-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-700 sm:w-auto">Download Free Trial</a>
+          <a href="https://YOUR_STORE.lemonsqueezy.com/buy/YOUR_ID?embed=1"
+             class="lemonsqueezy-button inline-flex w-full items-center justify-center rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-ink-900 ring-1 ring-black/10 transition hover:ring-black/25 sm:w-auto">Buy License — $2.99</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-black/5">
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-10 text-sm text-ink-500 sm:flex-row sm:px-8">
+      <p>© <span id="year"></span> Capture Master. All rights reserved.</p>
+      <div class="flex items-center gap-6">
+        <a href="mailto:interjjy@gmail.com" class="hover:text-ink-900 transition">Contact</a>
+        <a href="#faq" class="hover:text-ink-900 transition">FAQ</a>
+        <a href="index-ko.html" class="hover:text-ink-900 transition">한국어</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Nav background on scroll
+    const nav = document.getElementById('nav');
+    const onScroll = () => {
+      const s = window.scrollY > 8;
+      nav.classList.toggle('bg-white/75', s);
+      nav.classList.toggle('backdrop-blur-xl', s);
+      nav.classList.toggle('shadow-[0_1px_0_rgba(0,0,0,.06)]', s);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const open = item.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open);
+      });
+    });
+
+    // Reveal on scroll
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+
+  <!-- Lemon Squeezy checkout overlay -->
+  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+</body>
+</html>
